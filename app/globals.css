@@ -38,10 +38,10 @@ button:focus-visible, input:focus-visible, summary:focus-visible, a:focus-visibl
 }
 
 .app-shell {
-  width: min(100%, 560px);
+  width: min(100%, 430px);
   min-height: 100dvh;
   margin: 0 auto;
-  padding-bottom: 104px;
+  padding-bottom: 90px;
   overflow: hidden;
   background:
     radial-gradient(circle at 100% 0, rgba(232, 223, 255, 0.75), transparent 19rem),
@@ -53,8 +53,8 @@ button:focus-visible, input:focus-visible, summary:focus-visible, a:focus-visibl
   position: sticky;
   z-index: 10;
   top: 0;
-  min-height: 68px;
-  padding: 14px 20px;
+  min-height: 60px;
+  padding: 11px 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -73,8 +73,8 @@ button:focus-visible, input:focus-visible, summary:focus-visible, a:focus-visibl
 
 .brand-mark {
   position: relative;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   display: block;
   border: 2px solid var(--ink);
   border-radius: 12px;
@@ -93,14 +93,14 @@ button:focus-visible, input:focus-visible, summary:focus-visible, a:focus-visibl
   background: var(--purple);
 }
 
-.brand strong { display: block; font-size: 17px; line-height: 1; letter-spacing: -0.04em; }
+.brand strong { display: block; font-size: 16px; line-height: 1; letter-spacing: -0.04em; }
 .brand small { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; }
 
 .live-clock {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  padding: 8px 11px;
+  padding: 7px 10px;
   border: 1px solid var(--line);
   border-radius: 999px;
   color: #5e576d;
@@ -117,8 +117,8 @@ button:focus-visible, input:focus-visible, summary:focus-visible, a:focus-visibl
   box-shadow: 0 0 0 3px rgba(138,104,227,.14);
 }
 
-.hero { padding: 34px 20px 18px; }
-.hero-copy { padding: 0 4px 24px; }
+.hero { padding: 25px 16px 14px; }
+.hero-copy { padding: 0 3px 19px; }
 .eyebrow, .card-label {
   margin: 0 0 9px;
   color: var(--purple);
@@ -129,7 +129,7 @@ button:focus-visible, input:focus-visible, summary:focus-visible, a:focus-visibl
 
 .hero h1 {
   margin: 0;
-  font-size: clamp(35px, 9vw, 48px);
+  font-size: clamp(31px, 8.5vw, 38px);
   font-weight: 800;
   line-height: 1.13;
   letter-spacing: -.06em;
@@ -155,17 +155,17 @@ button:focus-visible, input:focus-visible, summary:focus-visible, a:focus-visibl
 }
 
 .hero-copy > p:last-child {
-  margin: 14px 0 0;
+  margin: 11px 0 0;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1.65;
 }
 
 .quick-add {
   position: relative;
-  padding: 18px;
+  padding: 15px;
   border: 1px solid rgba(118,87,214,.18);
-  border-radius: 24px;
+  border-radius: 20px;
   background: var(--card);
   box-shadow: var(--shadow);
 }
@@ -184,18 +184,18 @@ button:focus-visible, input:focus-visible, summary:focus-visible, a:focus-visibl
 
 .quick-add-heading { display: flex; align-items: center; gap: 7px; margin-bottom: 11px; }
 .quick-add-heading > span { color: var(--purple); font-size: 18px; line-height: 1; }
-.quick-add label { font-size: 13px; font-weight: 800; }
+.quick-add label { font-size: 12px; font-weight: 800; }
 .input-row { display: grid; grid-template-columns: minmax(0, 1fr) 74px; gap: 8px; }
 
 .input-row input {
   min-width: 0;
-  height: 52px;
-  padding: 0 14px;
+  height: 46px;
+  padding: 0 12px;
   border: 1px solid #ddd6e8;
   border-radius: 15px;
   color: var(--ink);
   background: #faf8fe;
-  font-size: 13px;
+  font-size: 12px;
   transition: border-color 160ms, box-shadow 160ms;
 }
 
@@ -234,25 +234,25 @@ button:focus-visible, input:focus-visible, summary:focus-visible, a:focus-visibl
 }
 .error-banner button, .error-banner a { border: 0; color: inherit; background: transparent; font-weight: 800; text-decoration: underline; }
 
-.dashboard { padding: 12px 20px 26px; }
+.dashboard { padding: 10px 16px 22px; }
 .date-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 15px; }
 .date-toolbar p { margin: 0 0 3px; color: var(--purple); font-size: 9px; font-weight: 850; letter-spacing: .12em; }
-.date-toolbar h2 { margin: 0; font-size: 22px; letter-spacing: -.04em; }
+.date-toolbar h2 { margin: 0; font-size: 19px; letter-spacing: -.04em; }
 .date-controls { display: flex; align-items: center; gap: 5px; }
-.date-controls button, .date-controls input { height: 34px; border: 1px solid var(--line); border-radius: 10px; color: #625b6d; background: white; }
-.date-controls button { min-width: 34px; font-size: 19px; }
+.date-controls button, .date-controls input { height: 36px; border: 1px solid var(--line); border-radius: 9px; color: #625b6d; background: white; }
+.date-controls button { min-width: 36px; font-size: 17px; }
 .date-controls .today-button { padding: 0 10px; font-size: 10px; font-weight: 750; }
 .date-controls input { width: 38px; padding: 0 7px; color: transparent; font-size: 10px; }
 
 .dashboard-grid { display: grid; gap: 12px; }
 .focus-card {
   position: relative;
-  min-height: 252px;
-  padding: 22px;
+  min-height: 218px;
+  padding: 18px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border-radius: 25px;
+  border-radius: 21px;
   color: white;
   background:
     radial-gradient(circle at 92% 15%, rgba(255,227,138,.22), transparent 8rem),
@@ -274,32 +274,32 @@ button:focus-visible, input:focus-visible, summary:focus-visible, a:focus-visibl
 .focus-missed { background: linear-gradient(145deg, #bc6370, #934552); }
 .focus-topline { position: relative; z-index: 1; display: flex; justify-content: space-between; color: #eee8ff; font-size: 11px; font-weight: 800; }
 .focus-topline b { padding: 4px 7px; border-radius: 7px; color: #694f0b; background: var(--yellow); font-size: 9px; }
-.focus-time { position: relative; z-index: 1; margin-top: 22px; color: #fff0ad; font-size: 12px; font-weight: 850; }
-.focus-card h3 { position: relative; z-index: 1; margin: 7px 0 5px; max-width: 400px; font-size: clamp(26px, 7vw, 36px); line-height: 1.2; letter-spacing: -.05em; }
+.focus-time { position: relative; z-index: 1; margin-top: 17px; color: #fff0ad; font-size: 11px; font-weight: 850; }
+.focus-card h3 { position: relative; z-index: 1; margin: 6px 0 5px; max-width: 360px; font-size: clamp(23px, 6.5vw, 29px); line-height: 1.2; letter-spacing: -.05em; }
 .focus-card > p { position: relative; z-index: 1; margin: 0; color: #e1d9f7; font-size: 10px; }
-.focus-actions { position: relative; z-index: 2; display: flex; gap: 7px; margin-top: auto; padding-top: 22px; }
-.focus-actions button { min-height: 39px; padding: 0 13px; border: 1px solid rgba(255,255,255,.25); border-radius: 12px; color: white; background: rgba(255,255,255,.1); font-size: 11px; font-weight: 800; }
+.focus-actions { position: relative; z-index: 2; display: flex; gap: 6px; margin-top: auto; padding-top: 17px; }
+.focus-actions button { min-height: 40px; padding: 0 11px; border: 1px solid rgba(255,255,255,.25); border-radius: 11px; color: white; background: rgba(255,255,255,.1); font-size: 10px; font-weight: 800; }
 .focus-actions .primary-action { color: #4d397b; background: #fff; border-color: #fff; }
 .empty-focus { position: relative; z-index: 1; flex: 1; display: grid; place-items: center; align-content: center; gap: 10px; text-align: center; }
 .empty-focus > span { width: 43px; height: 43px; display: grid; place-items: center; border: 1px dashed rgba(255,255,255,.5); border-radius: 15px; color: #fff0ad; font-size: 23px; }
 .empty-focus p { margin: 0; color: #e5def7; line-height: 1.65; font-size: 11px; }
 
-.summary-card { padding: 14px 16px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; border: 1px solid var(--line); border-radius: 20px; background: rgba(255,255,255,.8); }
+.summary-card { padding: 12px 14px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; border: 1px solid var(--line); border-radius: 18px; background: rgba(255,255,255,.8); }
 .summary-card .card-label, .summary-card small, .summary-card .progress-track { grid-column: 1 / -1; }
 .summary-stat { padding: 6px 4px 8px; text-align: center; border-right: 1px solid var(--line); }
 .summary-stat:nth-of-type(3) { border-right: 0; }
-.summary-stat strong { display: block; color: var(--purple-dark); font-size: 24px; line-height: 1; }
+.summary-stat strong { display: block; color: var(--purple-dark); font-size: 21px; line-height: 1; }
 .summary-stat span { display: block; margin-top: 5px; color: var(--muted); font-size: 9px; }
 .progress-track { height: 6px; margin-top: 3px; overflow: hidden; border-radius: 99px; background: #eae5f0; }
 .progress-track span { height: 100%; display: block; border-radius: inherit; background: linear-gradient(90deg, var(--purple), var(--peach)); transition: width 240ms; }
 .summary-card > small { color: #928b9b; font-size: 9px; text-align: center; }
 
-.schedule-list-section { margin-top: 27px; scroll-margin-top: 82px; }
+.schedule-list-section { margin-top: 23px; scroll-margin-top: 72px; }
 .section-heading { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 12px; }
-.section-heading h2 { margin: 0; font-size: 22px; letter-spacing: -.04em; }
+.section-heading h2 { margin: 0; font-size: 19px; letter-spacing: -.04em; }
 .section-heading > span { padding: 5px 9px; border-radius: 999px; color: var(--purple-dark); background: var(--lavender-soft); font-size: 10px; font-weight: 800; }
 .schedule-list { display: grid; gap: 8px; }
-.schedule-row { min-height: 76px; padding: 12px; display: grid; grid-template-columns: 29px 54px minmax(0, 1fr) 30px; align-items: center; gap: 7px; border: 1px solid var(--line); border-radius: 17px; background: white; box-shadow: 0 7px 20px rgba(66,48,96,.045); }
+.schedule-row { min-height: 68px; padding: 10px; display: grid; grid-template-columns: 27px 50px minmax(0, 1fr) 28px; align-items: center; gap: 6px; border: 1px solid var(--line); border-radius: 15px; background: white; box-shadow: 0 7px 20px rgba(66,48,96,.045); }
 .check-button { width: 24px; height: 24px; display: grid; place-items: center; border: 1.5px solid #aaa1b8; border-radius: 9px; color: white; background: transparent; font-size: 11px; }
 .is-completed .check-button { border-color: var(--purple); background: var(--purple); }
 .row-time { color: var(--purple-dark); font-size: 10px; font-weight: 850; }
@@ -328,22 +328,22 @@ footer span:first-child { color: #6f6879; font-weight: 850; }
   position: fixed;
   z-index: 15;
   left: 50%;
-  bottom: 14px;
-  width: min(calc(100% - 24px), 520px);
-  min-height: 68px;
-  padding: 8px 12px;
+  bottom: 10px;
+  width: min(calc(100% - 20px), 410px);
+  min-height: 60px;
+  padding: 6px 10px;
   display: grid;
   grid-template-columns: 1fr 1.25fr 1fr;
   align-items: center;
   border: 1px solid rgba(220,211,232,.9);
-  border-radius: 24px;
+  border-radius: 21px;
   background: rgba(255,255,255,.94);
   box-shadow: 0 14px 38px rgba(56,39,83,.18);
   backdrop-filter: blur(18px);
   transform: translateX(-50%);
 }
-.bottom-nav a { min-height: 48px; display: grid; place-items: center; align-content: center; gap: 2px; border-radius: 16px; color: #817988; text-decoration: none; font-size: 9px; font-weight: 750; }
-.bottom-nav a > span { font-size: 18px; line-height: 1; }
+.bottom-nav a { min-height: 44px; display: grid; place-items: center; align-content: center; gap: 2px; border-radius: 14px; color: #817988; text-decoration: none; font-size: 8px; font-weight: 750; }
+.bottom-nav a > span { font-size: 16px; line-height: 1; }
 .bottom-nav .nav-add { color: white; background: var(--purple); box-shadow: 0 8px 18px rgba(118,87,214,.24); }
 .bottom-nav .nav-add > span { font-size: 20px; }
 .bottom-nav .nav-add b { font-size: 9px; }
@@ -354,20 +354,20 @@ footer span:first-child { color: #6f6879; font-weight: 850; }
 .toast .toast-close { color: #bdb6c5; font-size: 17px; }
 
 @media (min-width: 700px) {
-  .app-shell { margin-top: 24px; margin-bottom: 24px; min-height: calc(100dvh - 48px); border-radius: 30px; }
-  .bottom-nav { bottom: 28px; }
+  .app-shell { margin-top: 18px; margin-bottom: 18px; min-height: calc(100dvh - 36px); border-radius: 27px; }
+  .bottom-nav { bottom: 24px; }
 }
 
 @media (max-width: 420px) {
-  .topbar { padding-inline: 16px; }
-  .hero { padding-inline: 16px; }
-  .dashboard { padding-inline: 16px; }
-  .hero h1 { font-size: 37px; }
-  .quick-add { padding: 16px; }
+  .topbar { padding-inline: 14px; }
+  .hero { padding-inline: 14px; }
+  .dashboard { padding-inline: 14px; }
+  .hero h1 { font-size: 32px; }
+  .quick-add { padding: 14px; }
   .input-row { grid-template-columns: minmax(0, 1fr) 68px; }
   .date-controls .today-button { display: none; }
-  .focus-card { min-height: 242px; padding: 20px; }
-  .focus-actions button { padding-inline: 11px; }
+  .focus-card { min-height: 210px; padding: 17px; }
+  .focus-actions button { padding-inline: 10px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
