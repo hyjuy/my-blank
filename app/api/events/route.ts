@@ -76,17 +76,40 @@ export async function GET(request: Request) {
   if (!userId) return authError();
   try {
     await ensureSchema();
-    const date = new URL(request.url).searchParams.get("date");
-    if (!isDateKey(date)) {
-      return Response.json({ error: "올바른 날짜가 필요합니다." }, { status: 400 });
+    const searchParams = new URL(request.url).searchParams;
+    const date = searchParams.get("date");
+    if (isDateKey(date)) {
+      const result = await env.DB.prepare(
+        `SELECT ${SELECT_COLUMNS} FROM schedules
+         WHERE user_id = ? AND schedule_date = ?
+         ORDER BY status ASC, CASE WHEN start_at IS NULL THEN 1 ELSE 0 END,
+                  start_at ASC, created_at ASC`,
+      )
+        .bind(userId, date)
+        .all<ScheduleItem>();
+      return Response.json({ items: result.results ?? [] });
     }
+
+    const from = searchParams.get("from");
+    const to = searchParams.get("to");
+    if (!isDateKey(from) || !isDateKey(to) || from > to) {
+      return Response.json({ error: "올바른 날짜 범위가 필요합니다." }, { status: 400 });
+    }
+
+    const maximumTo = new Date(`${from}T00:00:00Z`);
+    maximumTo.setUTCDate(maximumTo.getUTCDate() + 366);
+    if (to > maximumTo.toISOString().slice(0, 10)) {
+      return Response.json({ error: "조회 기간은 1년 이내여야 합니다." }, { status: 400 });
+    }
+
     const result = await env.DB.prepare(
       `SELECT ${SELECT_COLUMNS} FROM schedules
-       WHERE user_id = ? AND schedule_date = ?
-       ORDER BY status ASC, CASE WHEN start_at IS NULL THEN 1 ELSE 0 END,
+       WHERE user_id = ? AND schedule_date BETWEEN ? AND ?
+       ORDER BY schedule_date ASC, status ASC,
+                CASE WHEN start_at IS NULL THEN 1 ELSE 0 END,
                 start_at ASC, created_at ASC`,
     )
-      .bind(userId, date)
+      .bind(userId, from, to)
       .all<ScheduleItem>();
     return Response.json({ items: result.results ?? [] });
   } catch (error) {

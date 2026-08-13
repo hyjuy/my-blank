@@ -12,6 +12,7 @@ import {
 } from "@/lib/schedule";
 
 type Toast = { message: string; undoItem?: ScheduleItem } | null;
+type ViewMode = "daily" | "longterm";
 
 const DATE_FORMAT = new Intl.DateTimeFormat("ko-KR", {
   month: "long",
@@ -80,15 +81,19 @@ function overlapSet(items: ScheduleItem[]) {
 export function ScheduleApp({ initialNow }: { initialNow: string }) {
   const [now, setNow] = useState(() => new Date(initialNow));
   const [selectedDate, setSelectedDate] = useState(() => localDateKey(new Date(initialNow)));
+  const [viewMode, setViewMode] = useState<ViewMode>("daily");
   const [items, setItems] = useState<ScheduleItem[]>([]);
+  const [longItems, setLongItems] = useState<ScheduleItem[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(true);
+  const [longLoading, setLongLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [signIn, setSignIn] = useState<string | null>(null);
   const [toast, setToast] = useState<Toast>(null);
 
   const today = localDateKey(now);
+  const longRangeEnd = addDaysToKey(today, 90);
   const draft = useMemo(() => parseScheduleText(input || "일정", now), [input, now]);
 
   const loadItems = useCallback(async (date: string) => {
@@ -110,6 +115,25 @@ export function ScheduleApp({ initialNow }: { initialNow: string }) {
     }
   }, []);
 
+  const loadLongItems = useCallback(async (from: string, to: string) => {
+    setLongLoading(true);
+    setError("");
+    try {
+      const data = await apiRequest<{ items: ScheduleItem[] }>(
+        `/api/events?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`,
+      );
+      setLongItems(data.items);
+      setSignIn(null);
+    } catch (caught) {
+      const requestError = caught as Error & { status?: number; signIn?: string };
+      setLongItems([]);
+      setError(requestError.message);
+      if (requestError.status === 401) setSignIn(requestError.signIn ?? "/signin-with-chatgpt");
+    } finally {
+      setLongLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     const timer = window.setTimeout(() => void loadItems(selectedDate), 0);
     return () => window.clearTimeout(timer);
@@ -119,6 +143,12 @@ export function ScheduleApp({ initialNow }: { initialNow: string }) {
     const timer = window.setInterval(() => setNow(new Date()), 30_000);
     return () => window.clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    if (viewMode !== "longterm") return;
+    const timer = window.setTimeout(() => void loadLongItems(today, longRangeEnd), 0);
+    return () => window.clearTimeout(timer);
+  }, [loadLongItems, longRangeEnd, today, viewMode]);
 
   const duplicateCount = useMemo(() => {
     if (!input.trim() || draft.scheduleDate !== selectedDate) return 0;
@@ -136,6 +166,24 @@ export function ScheduleApp({ initialNow }: { initialNow: string }) {
     [items],
   );
   const overlaps = useMemo(() => overlapSet(items), [items]);
+  const longGroups = useMemo(() => {
+    const groups = new Map<string, ScheduleItem[]>();
+    const sorted = [...longItems].sort((a, b) =>
+      a.scheduleDate.localeCompare(b.scheduleDate) ||
+      a.status.localeCompare(b.status) ||
+      (a.startAt ?? "9999").localeCompare(b.startAt ?? "9999"),
+    );
+    for (const item of sorted) {
+      const group = groups.get(item.scheduleDate) ?? [];
+      group.push(item);
+      groups.set(item.scheduleDate, group);
+    }
+    return Array.from(groups.entries());
+  }, [longItems]);
+  const longPlannedCount = useMemo(
+    () => longItems.filter((item) => item.status === "planned").length,
+    [longItems],
+  );
 
   const focus = useMemo(() => {
     if (!planned.length) return { item: null, state: "empty" as const };
@@ -170,6 +218,9 @@ export function ScheduleApp({ initialNow }: { initialNow: string }) {
       setItems((current) => [...current, data.item]);
     } else {
       setSelectedDate(schedule.scheduleDate);
+    }
+    if (schedule.scheduleDate >= today && schedule.scheduleDate <= longRangeEnd) {
+      setLongItems((current) => [...current, data.item]);
     }
     return data;
   }
@@ -214,6 +265,11 @@ export function ScheduleApp({ initialNow }: { initialNow: string }) {
       } else {
         setItems((current) => current.filter((currentItem) => currentItem.id !== item.id));
       }
+      setLongItems((current) =>
+        current
+          .map((currentItem) => currentItem.id === data.item.id ? data.item : currentItem)
+          .filter((currentItem) => currentItem.scheduleDate >= today && currentItem.scheduleDate <= longRangeEnd),
+      );
       const messages = {
         complete: "완료했습니다. 오늘 한 일이 쌓였어요.",
         restore: "할 일로 되돌렸습니다.",
@@ -234,6 +290,7 @@ export function ScheduleApp({ initialNow }: { initialNow: string }) {
         { method: "DELETE" },
       );
       setItems((current) => current.filter((currentItem) => currentItem.id !== item.id));
+      setLongItems((current) => current.filter((currentItem) => currentItem.id !== item.id));
       setToast({ message: "일정을 삭제했습니다.", undoItem: item });
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "삭제하지 못했습니다.");
@@ -265,7 +322,7 @@ export function ScheduleApp({ initialNow }: { initialNow: string }) {
   };
 
   return (
-    <main className="app-shell">
+    <main className={`app-shell view-${viewMode}`}>
       <header className="topbar">
         <a className="brand" href="#top" aria-label="빈칸 홈">
           <span className="brand-mark" aria-hidden="true" />
@@ -279,6 +336,29 @@ export function ScheduleApp({ initialNow }: { initialNow: string }) {
           {CLOCK_FORMAT.format(now)}
         </div>
       </header>
+
+      <div className="screen-switch" role="tablist" aria-label="일정 보기 방식">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={viewMode === "daily"}
+          className={viewMode === "daily" ? "is-active" : ""}
+          onClick={() => setViewMode("daily")}
+        >
+          <span>하루 보기</span>
+          <small>지금 할 일</small>
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={viewMode === "longterm"}
+          className={viewMode === "longterm" ? "is-active" : ""}
+          onClick={() => setViewMode("longterm")}
+        >
+          <span>길게 보기</span>
+          <small>앞으로 90일</small>
+        </button>
+      </div>
 
       <section className="hero" id="top">
         <div className="hero-copy">
@@ -324,7 +404,9 @@ export function ScheduleApp({ initialNow }: { initialNow: string }) {
       {error ? (
         <div className="error-banner" role="alert">
           <span>{error}</span>
-          {signIn ? <a href={signIn}>로그인하기</a> : <button onClick={() => void loadItems(selectedDate)}>다시 시도</button>}
+          {signIn ? <a href={signIn}>로그인하기</a> : (
+            <button onClick={() => void (viewMode === "daily" ? loadItems(selectedDate) : loadLongItems(today, longRangeEnd))}>다시 시도</button>
+          )}
         </div>
       ) : null}
 
@@ -451,15 +533,66 @@ export function ScheduleApp({ initialNow }: { initialNow: string }) {
         </section>
       </section>
 
+      <section className="longterm-screen" role="tabpanel" aria-label="장기 일정">
+        <div className="longterm-heading">
+          <p className="eyebrow">THE NEXT 90 DAYS</p>
+          <h1>멀리 보는<br /><em>나의 빈칸</em></h1>
+          <p>오늘부터 90일 동안의 일정을 날짜별로 모아봤어요.</p>
+        </div>
+
+        <div className="longterm-summary" aria-label="장기 일정 요약">
+          <div><strong>{longPlannedCount}</strong><span>남은 일정</span></div>
+          <div><strong>{longGroups.length}</strong><span>일정 있는 날</span></div>
+          <div><strong>90</strong><span>확인하는 기간</span></div>
+        </div>
+
+        {longLoading ? (
+          <div className="loading-list" role="status">긴 일정을 불러오는 중…</div>
+        ) : longGroups.length === 0 ? (
+          <div className="empty-list"><span aria-hidden="true">✦</span>앞으로 등록된 일정이 없어요.<br />하루 보기에서 새로운 한 줄을 채워 보세요.</div>
+        ) : (
+          <div className="longterm-groups">
+            {longGroups.map(([date, dateItems]) => (
+              <section className="longterm-group" key={date}>
+                <div className="longterm-date">
+                  <div>
+                    <span>{date === today ? "오늘" : date.slice(5).replace("-", ".")}</span>
+                    <strong>{DATE_FORMAT.format(dateFromKey(date))}</strong>
+                  </div>
+                  <button onClick={() => { setSelectedDate(date); setViewMode("daily"); }}>하루로 보기</button>
+                </div>
+                <div className="longterm-items">
+                  {dateItems.map((item) => (
+                    <article className={`longterm-item ${item.status === "completed" ? "is-completed" : ""}`} key={item.id}>
+                      <button
+                        className="check-button"
+                        aria-label={item.status === "completed" ? "완료 취소" : "완료"}
+                        onClick={() => void updateItem(item, item.status === "completed" ? "restore" : "complete")}
+                      >
+                        {item.status === "completed" ? "✓" : ""}
+                      </button>
+                      <div>
+                        <h3>{item.title}</h3>
+                        <p>{timeLabel(item)} · {CATEGORY_LABELS[item.category]}</p>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </section>
+            ))}
+          </div>
+        )}
+      </section>
+
       <footer>
         <span>빈칸</span>
         <span>한 줄로 채우고, 내 마음대로 꾸미는 하루</span>
       </footer>
 
       <nav className="bottom-nav" aria-label="빠른 이동">
-        <a href="#top"><span aria-hidden="true">⌂</span>오늘</a>
-        <a className="nav-add" href="#quick-add"><span aria-hidden="true">＋</span><b>한 줄 추가</b></a>
-        <a href="#schedule-list"><span aria-hidden="true">☷</span>내 일정</a>
+        <button type="button" onClick={() => { setSelectedDate(today); setViewMode("daily"); }}><span aria-hidden="true">⌂</span>오늘</button>
+        <a className="nav-add" href="#quick-add" onClick={() => setViewMode("daily")}><span aria-hidden="true">＋</span><b>한 줄 추가</b></a>
+        <button type="button" onClick={() => setViewMode("longterm")}><span aria-hidden="true">☷</span>긴 일정</button>
       </nav>
 
       {toast ? (
