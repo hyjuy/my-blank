@@ -345,8 +345,7 @@ export function ScheduleApp({ initialNow }: { initialNow: string }) {
           className={viewMode === "daily" ? "is-active" : ""}
           onClick={() => setViewMode("daily")}
         >
-          <span>하루 보기</span>
-          <small>지금 할 일</small>
+          <span>하루</span>
         </button>
         <button
           type="button"
@@ -355,14 +354,13 @@ export function ScheduleApp({ initialNow }: { initialNow: string }) {
           className={viewMode === "longterm" ? "is-active" : ""}
           onClick={() => setViewMode("longterm")}
         >
-          <span>길게 보기</span>
-          <small>앞으로 90일</small>
+          <span>장기</span>
         </button>
       </div>
 
       <section className="hero" id="top">
         <div className="hero-copy">
-          <p className="eyebrow">TODAY, MY WAY</p>
+          <p className="eyebrow">오늘을 내 방식대로</p>
           <h1>오늘의 빈칸을<br /><em>한 줄씩</em> 채워요.</h1>
           <p>내 마음대로 적으면 날짜와 시간을 알아서 정리해 드려요.</p>
         </div>
@@ -413,7 +411,7 @@ export function ScheduleApp({ initialNow }: { initialNow: string }) {
       <section className="dashboard" aria-label="일정 대시보드">
         <div className="date-toolbar">
           <div>
-            <p>{selectedDate === today ? "MY TODAY" : "ANOTHER DAY"}</p>
+            <p>{selectedDate === today ? "오늘" : "선택한 날"}</p>
             <h2>{DATE_FORMAT.format(dateFromKey(selectedDate))}</h2>
           </div>
           <div className="date-controls">
@@ -469,7 +467,7 @@ export function ScheduleApp({ initialNow }: { initialNow: string }) {
         <section className="schedule-list-section" id="schedule-list">
           <div className="section-heading">
             <div>
-              <p className="card-label">MY LINES</p>
+              <p className="card-label">나의 일정</p>
               <h2>오늘 채운 칸</h2>
             </div>
             <span>{items.length}개</span>
@@ -535,7 +533,7 @@ export function ScheduleApp({ initialNow }: { initialNow: string }) {
 
       <section className="longterm-screen" role="tabpanel" aria-label="장기 일정">
         <div className="longterm-heading">
-          <p className="eyebrow">THE NEXT 90 DAYS</p>
+          <p className="eyebrow">앞으로 90일</p>
           <h1>멀리 보는<br /><em>나의 빈칸</em></h1>
           <p>오늘부터 90일 동안의 일정을 날짜별로 모아봤어요.</p>
         </div>
