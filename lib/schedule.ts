@@ -42,9 +42,10 @@ export const CATEGORY_LABELS: Record<ScheduleCategory, string> = {
 };
 
 export function localDateKey(date: Date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
+  const koreanTime = new Date(date.getTime() + 9 * 60 * 60 * 1000);
+  const year = koreanTime.getUTCFullYear();
+  const month = String(koreanTime.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(koreanTime.getUTCDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 }
 

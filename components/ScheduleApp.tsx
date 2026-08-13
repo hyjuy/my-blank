@@ -17,15 +17,18 @@ const DATE_FORMAT = new Intl.DateTimeFormat("ko-KR", {
   month: "long",
   day: "numeric",
   weekday: "short",
+  timeZone: "Asia/Seoul",
 });
 const CLOCK_FORMAT = new Intl.DateTimeFormat("ko-KR", {
   hour: "numeric",
   minute: "2-digit",
   hour12: true,
+  timeZone: "Asia/Seoul",
 });
 const SHORT_DATE_FORMAT = new Intl.DateTimeFormat("ko-KR", {
   month: "numeric",
   day: "numeric",
+  timeZone: "Asia/Seoul",
 });
 
 async function apiRequest<T>(url: string, init?: RequestInit): Promise<T> {
@@ -74,9 +77,9 @@ function overlapSet(items: ScheduleItem[]) {
   return ids;
 }
 
-export function ScheduleApp() {
-  const [now, setNow] = useState(() => new Date());
-  const [selectedDate, setSelectedDate] = useState(() => localDateKey(new Date()));
+export function ScheduleApp({ initialNow }: { initialNow: string }) {
+  const [now, setNow] = useState(() => new Date(initialNow));
+  const [selectedDate, setSelectedDate] = useState(() => localDateKey(new Date(initialNow)));
   const [items, setItems] = useState<ScheduleItem[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(true);
