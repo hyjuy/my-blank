@@ -267,11 +267,11 @@ export function ScheduleApp({ initialNow }: { initialNow: string }) {
   return (
     <main className="app-shell">
       <header className="topbar">
-        <a className="brand" href="#top" aria-label="취준 일정 홈">
-          <span className="brand-mark">J</span>
+        <a className="brand" href="#top" aria-label="빈칸 홈">
+          <span className="brand-mark" aria-hidden="true" />
           <span>
-            <strong>취준 일정</strong>
-            <small>부담 없이, 지금 할 일 하나</small>
+            <strong>빈칸</strong>
+            <small>나만의 하루 한 칸</small>
           </span>
         </a>
         <div className="live-clock" aria-label="현재 시각">
@@ -282,13 +282,16 @@ export function ScheduleApp({ initialNow }: { initialNow: string }) {
 
       <section className="hero" id="top">
         <div className="hero-copy">
-          <p className="eyebrow">JOB SEEKER PLANNER · FREE MVP</p>
-          <h1>복잡한 계획 말고,<br />지금 할 일만 선명하게.</h1>
-          <p>형식 없이 한 줄로 적으세요. 날짜와 시간을 읽어 일정으로 정리합니다.</p>
+          <p className="eyebrow">TODAY, MY WAY</p>
+          <h1>오늘의 빈칸을<br /><em>한 줄씩</em> 채워요.</h1>
+          <p>내 마음대로 적으면 날짜와 시간을 알아서 정리해 드려요.</p>
         </div>
 
-        <form className="quick-add" onSubmit={handleSubmit}>
-          <label htmlFor="quick-input">한 줄 일정 등록</label>
+        <form className="quick-add" id="quick-add" onSubmit={handleSubmit}>
+          <div className="quick-add-heading">
+            <span aria-hidden="true">＋</span>
+            <label htmlFor="quick-input">오늘, 어떤 칸을 채울까요?</label>
+          </div>
           <div className="input-row">
             <input
               id="quick-input"
@@ -298,8 +301,8 @@ export function ScheduleApp({ initialNow }: { initialNow: string }) {
               maxLength={300}
               autoComplete="off"
             />
-            <button type="submit" disabled={!input.trim() || saving}>
-              {saving ? "저장 중" : "등록"}
+            <button type="submit" disabled={!input.trim() || saving} aria-label="한 줄 저장">
+              {saving ? "저장 중" : "채우기"}
             </button>
           </div>
           {input.trim() ? (
@@ -313,7 +316,7 @@ export function ScheduleApp({ initialNow }: { initialNow: string }) {
               ) : null}
             </div>
           ) : (
-            <p className="input-hint">날짜가 없으면 오늘, 시간이 없으면 ‘시간 미정’으로 저장됩니다.</p>
+            <p className="input-hint">날짜가 없으면 오늘에, 시간이 없으면 언제든 할 일로 담아요.</p>
           )}
         </form>
       </section>
@@ -328,7 +331,7 @@ export function ScheduleApp({ initialNow }: { initialNow: string }) {
       <section className="dashboard" aria-label="일정 대시보드">
         <div className="date-toolbar">
           <div>
-            <p>{selectedDate === today ? "오늘" : "선택한 날짜"}</p>
+            <p>{selectedDate === today ? "MY TODAY" : "ANOTHER DAY"}</p>
             <h2>{DATE_FORMAT.format(dateFromKey(selectedDate))}</h2>
           </div>
           <div className="date-controls">
@@ -363,14 +366,14 @@ export function ScheduleApp({ initialNow }: { initialNow: string }) {
               </>
             ) : (
               <div className="empty-focus">
-                <span>✓</span>
-                <p>한 줄로 첫 일정을 등록해 보세요.<br />완벽한 계획보다 작은 시작이면 충분합니다.</p>
+                <span>＋</span>
+                <p>아직은 여백으로 남아 있어요.<br />하고 싶은 일을 한 줄로 채워 보세요.</p>
               </div>
             )}
           </section>
 
           <aside className="summary-card">
-            <p className="card-label">오늘의 흐름</p>
+            <p className="card-label">오늘의 채움</p>
             <div className="summary-stat"><strong>{planned.length}</strong><span>남은 일정</span></div>
             <div className="summary-stat"><strong>{completed.length}</strong><span>완료한 일정</span></div>
             <div className="summary-stat"><strong>{overlaps.size}</strong><span>겹치는 일정</span></div>
@@ -381,11 +384,11 @@ export function ScheduleApp({ initialNow }: { initialNow: string }) {
           </aside>
         </div>
 
-        <section className="schedule-list-section">
+        <section className="schedule-list-section" id="schedule-list">
           <div className="section-heading">
             <div>
-              <p className="card-label">DAY PLAN</p>
-              <h2>하루 일정</h2>
+              <p className="card-label">MY LINES</p>
+              <h2>오늘 채운 칸</h2>
             </div>
             <span>{items.length}개</span>
           </div>
@@ -393,7 +396,7 @@ export function ScheduleApp({ initialNow }: { initialNow: string }) {
           {loading ? (
             <div className="loading-list" role="status">일정을 불러오는 중…</div>
           ) : items.length === 0 ? (
-            <div className="empty-list">아직 일정이 없습니다. 위 입력창에 자연스럽게 한 줄로 적어보세요.</div>
+            <div className="empty-list"><span aria-hidden="true">✦</span>아직 채운 칸이 없어요.<br />오늘의 첫 한 줄을 적어 보세요.</div>
           ) : (
             <div className="schedule-list">
               {items.map((item) => {
@@ -449,9 +452,15 @@ export function ScheduleApp({ initialNow }: { initialNow: string }) {
       </section>
 
       <footer>
-        <span>취준 일정 MVP</span>
-        <span>규칙 기반 한 줄 분석 · 사용자별 안전한 저장 · 무료 운영 구조</span>
+        <span>빈칸</span>
+        <span>한 줄로 채우고, 내 마음대로 꾸미는 하루</span>
       </footer>
+
+      <nav className="bottom-nav" aria-label="빠른 이동">
+        <a href="#top"><span aria-hidden="true">⌂</span>오늘</a>
+        <a className="nav-add" href="#quick-add"><span aria-hidden="true">＋</span><b>한 줄 추가</b></a>
+        <a href="#schedule-list"><span aria-hidden="true">☷</span>내 일정</a>
+      </nav>
 
       {toast ? (
         <div className="toast" role="status">
